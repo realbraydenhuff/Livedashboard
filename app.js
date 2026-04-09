@@ -24,12 +24,35 @@ const els = {
 
 const money = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(n || 0));
 const num = (n, d = 2) => Number(n || 0).toFixed(d);
-const timeAgo = (value) => {
-  const date = new Date(value);
-  const diff = Math.round((Date.now() - date.getTime()) / 1000);
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  return `${Math.floor(diff / 3600)}h ago`;
+function formatCentralTime(ts) {
+  const date = new Date(ts);
+function formatCentralTimeWithAgo(ts) {
+  const date = new Date(ts);
+  const now = new Date();
+  const diffMs = now - date;
+
+  const minutes = Math.floor(diffMs / 60000);
+  const hours = Math.floor(diffMs / 3600000);
+
+  let ago = '';
+  if (minutes < 60) {
+    ago = `${minutes}m ago`;
+  } else if (hours < 24) {
+    ago = `${hours}h ago`;
+  } else {
+    ago = `${Math.floor(hours / 24)}d ago`;
+  }
+
+  const formatted = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit'
+  }).format(date);
+
+  return `${ago} • ${formatted} CT`;
+}
 };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
