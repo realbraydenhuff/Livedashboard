@@ -43,7 +43,7 @@ function formatCentralTimeWithAgo(ts) {
     ago = `${Math.floor(hours / 24)}d ago`;
   }
 
-  const formatted = new Intl.DateTimeFormat('en-US', {
+ formatCentralTimeWithAgo(trade.time)
     timeZone: 'America/Chicago',
     month: 'short',
     day: 'numeric',
