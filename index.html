@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Polymarket Live Copy Dashboard</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>Polymarket Live Copy Dashboard</h1>
+        <p class="muted">Client-side deploy · auto-refreshes from public Polymarket APIs</p>
+      </div>
+      <div class="controls">
+        <label>
+          Refresh
+          <select id="refreshInterval">
+            <option value="5000">5s</option>
+            <option value="10000">10s</option>
+            <option value="15000" selected>15s</option>
+            <option value="30000">30s</option>
+            <option value="60000">60s</option>
+          </select>
+        </label>
+        <button id="refreshNow">Refresh now</button>
+      </div>
+    </header>
+
+    <section class="banner">
+      <div><strong>Status:</strong> <span id="statusText">Starting…</span></div>
+      <div><strong>Last update:</strong> <span id="lastUpdate">—</span></div>
+    </section>
+
+    <section class="grid kpis">
+      <article class="card"><div class="label">Tracked wallets</div><div id="kpiWallets" class="value">0</div></article>
+      <article class="card"><div class="label">Open positions</div><div id="kpiPositions" class="value">0</div></article>
+      <article class="card"><div class="label">Net cash PnL</div><div id="kpiPnl" class="value">$0</div></article>
+      <article class="card"><div class="label">Watchlist markets</div><div id="kpiMarkets" class="value">0</div></article>
+    </section>
+
+    <section class="grid two">
+      <article class="card">
+        <div class="cardhead">
+          <h2>Wallet summary</h2>
+          <span class="muted">Live from Data API</span>
+        </div>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Wallet</th>
+                <th class="num">Open pos.</th>
+                <th class="num">Current value</th>
+                <th class="num">Cash PnL</th>
+                <th>Top market</th>
+              </tr>
+            </thead>
+            <tbody id="walletTable"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="cardhead">
+          <h2>Live wallet activity</h2>
+          <span class="muted">Recent watched-wallet trades</span>
+        </div>
+        <div class="tablewrap compact">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Wallet</th>
+                <th>Market</th>
+                <th>Side</th>
+                <th class="num">Price</th>
+                <th class="num">Size</th>
+              </tr>
+            </thead>
+            <tbody id="tradeTable"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid two">
+      <article class="card">
+        <div class="cardhead">
+          <h2>Watched markets</h2>
+          <span class="muted">Pulled by slug from Gamma API</span>
+        </div>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Market</th>
+                <th class="num">Yes</th>
+                <th class="num">No</th>
+                <th class="num">24h vol</th>
+                <th>Signal</th>
+              </tr>
+            </thead>
+            <tbody id="marketTable"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="cardhead">
+          <h2>Alerts</h2>
+          <span class="muted">Generated in-browser</span>
+        </div>
+        <div id="alerts" class="alerts"></div>
+      </article>
+    </section>
+
+    <section class="card settings">
+      <div class="cardhead">
+        <h2>Plug-and-play config</h2>
+        <span class="muted">Edit <code>config.js</code> and redeploy</span>
+      </div>
+      <div class="cols">
+        <div>
+          <h3>Watched wallets</h3>
+          <ul id="walletList"></ul>
+        </div>
+        <div>
+          <h3>Watched market slugs</h3>
+          <ul id="marketList"></ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
