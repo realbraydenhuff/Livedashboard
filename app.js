@@ -43,17 +43,34 @@ function formatCentralTimeWithAgo(ts) {
     ago = `${Math.floor(hours / 24)}d ago`;
   }
 
- formatCentralTimeWithAgo(trade.time)
+ function formatCentralTimeWithAgo(ts) {
+  const date = new Date(ts);
+  const now = new Date();
+  const diffMs = now - date;
+
+  const minutes = Math.floor(diffMs / 60000);
+  const hours = Math.floor(diffMs / 3600000);
+
+  let ago = '';
+  if (minutes < 60) {
+    ago = `${minutes}m ago`;
+  } else if (hours < 24) {
+    ago = `${hours}h ago`;
+  } else {
+    ago = `${Math.floor(hours / 24)}d ago`;
+  }
+
+  const formatted = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Chicago',
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
-    minute: '2-digit'
+    minute: '2-digit',
+    hour12: true
   }).format(date);
 
   return `${ago} • ${formatted} CT`;
 }
-};
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function setStatus(text, bad = false) {
