@@ -201,10 +201,30 @@ function renderKpis(wallets, markets) {
 async function refresh() {
   setStatus('Refreshing…');
   try {
-    const [wallets, markets] = await Promise.all([
-      Promise.all(cfg.wallets.map(fetchWalletSnapshot)),
-      Promise.all(cfg.markets.map(fetchMarketBySlug))
-    ]);
+    const walletAddresses = cfg.wallets.map(w => w.address).join(',');
+    const marketSlugs = cfg.markets.join(',');
+    const url = `/api/snapshot?wallets=${encodeURIComponent(walletAddresses)}&markets=${encodeURIComponent(marketSlugs)}`;
+
+    const snapshot = await fetchJson(url);
+
+    const wallets = cfg.wallets.map(w => {
+      const match = (snapshot.wallets || []).find(x => x.address.toLowerCase() === w.address.toLowerCase()) || {};
+      const openPositions = Array.isArray(match.positions) ? match.positions : [];
+      const currentValue = openPositions.reduce((sum, p) => sum + Number(p.currentValue || 0), 0);
+      const cashPnl = openPositions.reduce((sum, p) => sum + Number(p.cashPnl || 0), 0);
+      const topPosition = [...openPositions].sort((a, b) => Number(b.currentValue || 0) - Number(a.currentValue || 0))[0];
+
+      return {
+        wallet: w,
+        openPositions,
+        currentValue,
+        cashPnl,
+        topPosition,
+        trades: Array.isArray(match.trades) ? match.trades : []
+      };
+    });
+
+    const markets = Array.isArray(snapshot.markets) ? snapshot.markets : [];
 
     renderWallets(wallets);
     renderTrades(wallets);
@@ -218,7 +238,6 @@ async function refresh() {
     setStatus(`Update failed: ${err.message}`, true);
   }
 }
-
 function restartTimer() {
   if (state.intervalId) clearInterval(state.intervalId);
   const ms = Number(els.refreshInterval.value || cfg.refreshMs || 15000);
