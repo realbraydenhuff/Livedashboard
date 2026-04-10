@@ -43,7 +43,7 @@ function formatCentralTimeWithAgo(ts) {
     ago = `${Math.floor(hours / 24)}d ago`;
   }
 
- function formatCentralTimeWithAgo(ts) {
+formatCentralTimeWithAgo(trade.time)
   const date = new Date(ts);
   const now = new Date();
   const diffMs = now - date;
